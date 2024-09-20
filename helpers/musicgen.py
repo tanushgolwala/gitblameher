@@ -29,5 +29,3 @@ def generate_music(input_prompt: str, filename: str):
 
 	print(f"Audio file saved as {filename}.wav")
 	return error, filename
-
-generate_music("A happy melody tune for background music", "happy_tune")

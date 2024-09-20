@@ -3,6 +3,8 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
 from config import load_config
 from imagegen import create_image
+import multiprocessing
+import musicgen
 
 def initialize_model():
     config = load_config()
@@ -15,11 +17,15 @@ def get_image_prompt(scene_info):
 
 def get_summary(scene_info):
     match = re.search(r'\*\*Summary:\*\*(.*?)\*\*Characters:', scene_info, re.DOTALL)
+    print("SUMMARY:", match.group(1).strip() if match else None)
     return match.group(1).strip() if match else None
 
 def get_audio_prompt(scene_info):
     match = re.search(r'\*\*Audio:\*\*(.*?)\*\*Visual', scene_info, re.DOTALL)
     return match.group(1).strip() if match else None
+
+def generate_audio(audio_prompt, scene_index):
+    return musicgen.generate_music(audio_prompt, f'scene_{scene_index+1}')
 
 def handle_safety_error(response):
     if response.candidates:
@@ -88,22 +94,37 @@ Here is the text:
         return []
 
 
-def generate_images_for_scenes(scenes):
-    for i,scene in enumerate(scenes):
-        prompt = get_image_prompt(scene)
-        print(get_audio_prompt(scene))
-        if prompt:
-            try:
-                create_image(prompt,f'scene_{i+1}',get_summary(scene))
-            except:
-                print(f"Error generating image for scene {i+1}")
-        else:
-            print(f"Prompt not found for scene {i+1}")
+def generate_images_and_audio_for_scenes(scenes):
+    # with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+        audio_tasks = []
+        for i, scene in enumerate(scenes):
+            print(f"Generating image and audio for scene {i+1}...")
+            prompt = get_image_prompt(scene)
+            audio_prompt = get_audio_prompt(scene)
+            
+            if audio_prompt:
+                # audio_tasks.append(pool.apply_async(generate_audio, (audio_prompt, i)))
+                print("Generating audio for scene", i+1)
+                audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
+                print("Audio generated for scene", i+1)
+            
+            if prompt:
+                try:
+                    create_image(prompt, f'scene_{i+1}', get_summary(scene))
+                except:
+                    print(f"Error generating image for scene {i+1}")
+            else:
+                print(f"Prompt not found for scene {i+1}")
+        
+        # Wait for all audio generation tasks to complete
+        # for task in audio_tasks:
+        #     result = task.get()
+        #     print(result)
         
 
 def story_to_images(story):
     scenes = get_scenes(story)
-    generate_images_for_scenes(scenes)
+    generate_images_and_audio_for_scenes(scenes)
 
 story = '''
 Once upon a time, in a faraway kingdom, there lived a kind-hearted girl named Cinderella. She was the daughter of a wealthy man who remarried after her mother’s passing. Her father’s new wife, however, was a cruel and selfish woman. She brought along her two daughters, who were just as unkind. After Cinderella’s father passed away, her stepmother and stepsisters treated her like a servant. While they wore fine clothes and enjoyed their days, Cinderella was made to do all the housework, cook meals, and sleep in a dusty attic.
