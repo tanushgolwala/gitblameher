@@ -3,7 +3,6 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
 from config import load_config
 from imagegen import create_image
-import multiprocessing
 import musicgen
 
 def initialize_model():
