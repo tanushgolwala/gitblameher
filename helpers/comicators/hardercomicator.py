@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+import tensorflow as tf
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
 def add_text_bubble(image, text, x, y, face_width):
     draw = ImageDraw.Draw(image)
@@ -25,21 +29,29 @@ def add_text_bubble(image, text, x, y, face_width):
     
     draw.text((x + bubble_padding_x, y - bubble_height + bubble_padding_y), text, font=font, fill='black')
 
-def detect_main_face_and_add_text(image_path, output_path):
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+def add_text_harder(image_path, output_path,dialogue):
+    base_options = python.BaseOptions(model_asset_path='detector.tflite')
+    options = vision.FaceDetectorOptions(base_options=base_options)
+    detector = vision.FaceDetector.create_from_options(options)
 
     img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
+    detection_result = detector.detect(mp_image)
 
-    if len(faces) > 0:
-        main_face = max(faces, key=lambda f: f[2] * f[3])
-        x, y, w, h = main_face
+    if detection_result.detections:
+        main_face = max(detection_result.detections, key=lambda detection: detection.bounding_box.width * detection.bounding_box.height)
+        
+        bbox = main_face.bounding_box
+        x = int(bbox.origin_x)
+        y = int(bbox.origin_y)
+        w = int(bbox.width)
+        h = int(bbox.height)
 
-        pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        pil_img = Image.fromarray(img_rgb)
 
-        text = "Main Character"
+        text = dialogue
         add_text_bubble(pil_img, text, x, y - int(h * 0.5), w)
 
         pil_img.save(output_path)
@@ -47,6 +59,5 @@ def detect_main_face_and_add_text(image_path, output_path):
     else:
         print("No faces detected in the image.")
 
-input_image = "image_outputs/sherlock.jpg"
-output_image = "image_outputs/speeched2.jpg"
-detect_main_face_and_add_text(input_image, output_image)
+    detector.close()
+
