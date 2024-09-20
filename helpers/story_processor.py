@@ -17,6 +17,10 @@ def get_summary(scene_info):
     match = re.search(r'\*\*Summary:\*\*(.*?)\*\*Characters:', scene_info, re.DOTALL)
     return match.group(1).strip() if match else None
 
+def get_audio_prompt(scene_info):
+    match = re.search(r'\*\*Audio:\*\*(.*?)\*\*Visual', scene_info, re.DOTALL)
+    return match.group(1).strip() if match else None
+
 def handle_safety_error(response):
     if response.candidates:
         candidate = response.candidates[0]
@@ -41,8 +45,9 @@ def get_scenes(story, delimiter="*****", kidsMode= False):
    - Any important environmental details (weather, atmosphere, etc.)
 5. Note any significant objects or props that play a role in the scene.
 6. Highlight any emotional tone or mood that's important to convey.
-7. Suggest a vivid visual element that could represent the scene in a picture.
-8. Using the above details provide a prompt that could be used to generate an image using an AI model, that depicts every part of the image
+7. Suggest a background audio prompt for an AI background music generator that could enhance the scene. Do make sure EXTREME descriptive words are used (for example "epic" for an intense scene, "comical" for funny scenes etc.) and do mention "background music" in the prompt.
+8. Suggest a vivid visual element that could represent the scene in a picture.
+9. Using the above details provide a prompt that could be used to generate an image using an AI model, that depicts every part of the image. For each scene, the prompt should be detailed enough to capture the essence of the scene and provide a clear visual direction for the image generation, and also provide enough context with respect to characters, settings etc. such that there is consistency in how images are generated throughout the book.
 
 Format the output as follows:
 
@@ -55,6 +60,7 @@ Setting:
 - Details: [Important environmental elements]
 Objects: [List of significant objects or props]
 Tone: [Emotional tone or mood of the scene]
+Audio: [Suggestion for background audio]
 Visual Focus: [Suggestion for a key visual element]
 Prompt: [Prompt for image generation]
 *****
@@ -85,6 +91,7 @@ Here is the text:
 def generate_images_for_scenes(scenes):
     for i,scene in enumerate(scenes):
         prompt = get_image_prompt(scene)
+        print(get_audio_prompt(scene))
         if prompt:
             try:
                 create_image(prompt,f'scene_{i+1}',get_summary(scene))
