@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-import dlib
 
 def add_text_bubble(image, text, x, y, face_width):
     draw = ImageDraw.Draw(image)
@@ -27,20 +26,18 @@ def add_text_bubble(image, text, x, y, face_width):
     draw.text((x + bubble_padding_x, y - bubble_height + bubble_padding_y), text, font=font, fill='black')
 
 def detect_main_face_and_add_text(image_path, output_path):
-    detector = dlib.get_frontal_face_detector()
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     img = cv2.imread(image_path)
-    rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    faces = detector(rgb_img)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
     if len(faces) > 0:
-        main_face = max(faces, key=lambda rect: rect.width() * rect.height())
-        
-        x, y = main_face.left(), main_face.top()
-        w, h = main_face.width(), main_face.height()
+        main_face = max(faces, key=lambda f: f[2] * f[3])
+        x, y, w, h = main_face
 
-        pil_img = Image.fromarray(rgb_img)
+        pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
         text = "Main Character"
         add_text_bubble(pil_img, text, x, y - int(h * 0.5), w)
@@ -50,6 +47,6 @@ def detect_main_face_and_add_text(image_path, output_path):
     else:
         print("No faces detected in the image.")
 
-input_image = "image_outputs/lincoln_speech.png"
-output_image = "image_outputs/speeched.jpg"
+input_image = "image_outputs/sherlock.jpg"
+output_image = "image_outputs/speeched2.jpg"
 detect_main_face_and_add_text(input_image, output_image)
