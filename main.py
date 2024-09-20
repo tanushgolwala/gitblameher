@@ -31,11 +31,6 @@ def generate_music_from_prompt(prompt: str, filename: str):
     error, saved = musicgen.generate_music(prompt, filename)
     return {"success": not(error), "filename": saved}
 
-@app.get("/generate-music-from-prompt")
-def generate_music_from_prompt(prompt: str, filename: str):
-    error, saved = musicgen.generate_music(prompt, filename)
-    return {"success": not(error), "filename": saved}
-
 @app.post("/create-story")
 def create_story_from_text(text: str):
     story_to_images(text)
