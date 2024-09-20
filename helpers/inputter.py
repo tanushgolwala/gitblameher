@@ -9,16 +9,20 @@ class Inputter:
 
     def clean_text(self, text):
         page_number_pattern = re.compile(r"^\s*\d+\s*$|^\s*Page\s+\d+\s*$", re.IGNORECASE)
+        header_pattern = re.compile(r"(header text|document title|chapter \d+|any known pattern)", re.IGNORECASE)
         footer_pattern = re.compile(r"(footer text|confidential|any pattern you know)", re.IGNORECASE)
 
         lines = text.splitlines()
 
-        clean_lines = [line for line in lines if not page_number_pattern.match(line.strip()) and not footer_pattern.match(line.strip())]
+        clean_lines = [
+            line for line in lines 
+            if line.strip() and 
+            not page_number_pattern.match(line.strip()) and 
+            not header_pattern.match(line.strip()) and 
+            not footer_pattern.match(line.strip())
+        ]
 
-        if len(clean_lines) > 2:
-            clean_lines = clean_lines[1:-1]
-
-        return "\n".join(clean_lines)
+        return "\n".join(line for line in clean_lines if line.strip())
 
     def read_pdf(self):
         try:
@@ -54,7 +58,7 @@ class Inputter:
             print("Unsupported file format. Please provide a PDF or DOCX file.")
 
 def main():
-    inputter = Inputter() 
+    inputter = Inputter('datafiles/jeff101.pdf')  
     inputter.read()
 
 if __name__ == "__main__":
