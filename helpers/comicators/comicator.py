@@ -47,4 +47,4 @@ def face_text_adder(image_path, output_path,dialogue):
         print(f"Processed image saved as {output_path}")
     else:
         print("No faces detected in the image.... Adding Harder")
-        add_text_harder(image_path, output_path)
+        add_text_harder(image_path, output_path, dialogue)
