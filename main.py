@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from helpers import imagegen
 from helpers.inputter import Inputter
 from typing import Annotated
-from helpers.utils import get_flag_based_on_extension
+from utils.utils import get_flag_based_on_extension
 
 app = FastAPI()
 
