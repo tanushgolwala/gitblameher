@@ -13,6 +13,10 @@ def get_image_prompt(scene_info):
     match = re.search(r'\*\*Prompt:\*\*(.*)', scene_info)
     return match.group(1).strip() if match else None
 
+def get_summary(scene_info):
+    match = re.search(r'\*\*Summary:\*\*(.*?)\*\*Characters:', scene_info, re.DOTALL)
+    return match.group(1).strip() if match else None
+
 def handle_safety_error(response):
     if response.candidates:
         candidate = response.candidates[0]
@@ -29,7 +33,7 @@ def get_scenes(story, delimiter="*****", kidsMode= False):
     prompt = '''Given a text-based story, break it down into distinct scenes suitable for a picture book adaptation. For each scene:
 
 1. Identify the key action or event that defines the scene.
-2. Provide a brief summary of what happens in the scene (2-3 sentences).
+2. Provide a summary of what happens in the scene (2-3 sentences), this is going to be the caption in the picture book so make sure to not miss out on any details; all the summaries together should be able to form the continuous story.
 3. List the characters present in the scene.
 4. Describe the setting, including:
    - Location
@@ -43,7 +47,7 @@ def get_scenes(story, delimiter="*****", kidsMode= False):
 Format the output as follows:
 
 Scene [Number]: [Key Action/Event]
-Summary: [Brief description of what happens]
+Summary: [Text shown on the panel of the picture book with this image]
 Characters: [List of characters present]
 Setting:
 - Location: [Where the scene takes place]
@@ -79,12 +83,11 @@ Here is the text:
 
 
 def generate_images_for_scenes(scenes):
-
     for i,scene in enumerate(scenes):
         prompt = get_image_prompt(scene)
         if prompt:
             try:
-                create_image(prompt,f'scene_{i+1}')
+                create_image(prompt,f'scene_{i+1}',get_summary(scene))
             except:
                 print(f"Error generating image for scene {i+1}")
         else:
@@ -95,8 +98,8 @@ def story_to_images(story):
     scenes = get_scenes(story)
     generate_images_for_scenes(scenes)
 
-story = '''
-Once upon a time, in a small Italian village, there lived an old woodcarver named Geppetto. He was a kind man, but lonely, and spent his days crafting wooden toys. One day, with great care, he carved a puppet that looked like a little boy. He named it Pinocchio.
+
+story = '''Once upon a time, in a small Italian village, there lived an old woodcarver named Geppetto. He was a kind man, but lonely, and spent his days crafting wooden toys. One day, with great care, he carved a puppet that looked like a little boy. He named it Pinocchio.
 
 That night, as Geppetto slept, a magical blue fairy visited his workshop. She waved her wand over the puppet, bringing Pinocchio to life. She whispered, "Be kind, brave, and honest, and one day, you will become a real boy."
 
@@ -106,6 +109,7 @@ One day, Pinocchio met a sly fox and a cunning cat who tricked him into leaving 
 
 His adventures took him to strange places, even to the bottom of the ocean where he was swallowed by a giant whale. Inside the whale, Pinocchio found Geppetto, who had been searching for him. Pinocchio bravely rescued Geppetto, and they made their way back home.
 
-Through his bravery and love for Geppetto, Pinocchio learned the value of honesty and kindness. The blue fairy, seeing his change of heart, granted his wish, and Pinocchio became a real boy. Geppetto and Pinocchio lived happily ever after, knowing that truth and love made their bond stronger than ever.'''
+Through his bravery and love for Geppetto, Pinocchio learned the value of honesty and kindness. The blue fairy, seeing his change of heart, granted his wish, and Pinocchio became a real boy. Geppetto and Pinocchio lived happily ever after, knowing that truth and love made their bond stronger than ever.
+'''
 
 story_to_images(story)

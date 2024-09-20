@@ -3,6 +3,7 @@ from helpers import imagegen
 from helpers.inputter import Inputter
 from typing import Annotated
 from utils.utils import get_flag_based_on_extension
+from helpers.story_processor import story_to_images
 
 app = FastAPI()
 
@@ -24,3 +25,8 @@ async def create_upload_file(file: UploadFile):
     inputter = Inputter(file.file, get_flag_based_on_extension(file.filename))
     extracted_text = inputter.read()
     return {"extracted_text": extracted_text}
+
+@app.post("/create-story")
+def create_story_from_text(text: str):
+    story_to_images(text)
+    return {"status": "success"}
