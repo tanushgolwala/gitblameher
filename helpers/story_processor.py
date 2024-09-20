@@ -2,6 +2,7 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
 from config import load_config
+from imagegen import create_image
 
 def initialize_model():
     config = load_config()
@@ -23,7 +24,7 @@ def handle_safety_error(response):
             return True
     return False
 
-def get_scenes(story, delimiter="*****"):
+def get_scenes(story, delimiter="*****", kidsMode= False):
     model = initialize_model()
     prompt = '''Given a text-based story, break it down into distinct scenes suitable for a picture book adaptation. For each scene:
 
@@ -75,3 +76,36 @@ Here is the text:
     except Exception as e:
         print(f"Error in get_scenes: {e}")
         return []
+
+
+def generate_images_for_scenes(scenes):
+
+    for i,scene in enumerate(scenes):
+        prompt = get_image_prompt(scene)
+        if prompt:
+            try:
+                create_image(prompt,f'scene_{i+1}')
+            except:
+                print(f"Error generating image for scene {i+1}")
+        else:
+            print(f"Prompt not found for scene {i+1}")
+        
+
+def story_to_images(story):
+    scenes = get_scenes(story)
+    generate_images_for_scenes(scenes)
+
+story = '''
+Once upon a time, in a small Italian village, there lived an old woodcarver named Geppetto. He was a kind man, but lonely, and spent his days crafting wooden toys. One day, with great care, he carved a puppet that looked like a little boy. He named it Pinocchio.
+
+That night, as Geppetto slept, a magical blue fairy visited his workshop. She waved her wand over the puppet, bringing Pinocchio to life. She whispered, "Be kind, brave, and honest, and one day, you will become a real boy."
+
+The next morning, Geppetto was astonished to find Pinocchio walking and talking. Overjoyed, he treated Pinocchio like a son. However, Pinocchio was mischievous and curious, often finding himself in trouble. He didn’t always tell the truth, and every time he lied, his nose would grow longer.
+
+One day, Pinocchio met a sly fox and a cunning cat who tricked him into leaving school and following them. They led him into a world of trouble, where he was nearly sold as a performer in a puppet show. Escaping with the help of the blue fairy, Pinocchio promised to be good but struggled to keep his word.
+
+His adventures took him to strange places, even to the bottom of the ocean where he was swallowed by a giant whale. Inside the whale, Pinocchio found Geppetto, who had been searching for him. Pinocchio bravely rescued Geppetto, and they made their way back home.
+
+Through his bravery and love for Geppetto, Pinocchio learned the value of honesty and kindness. The blue fairy, seeing his change of heart, granted his wish, and Pinocchio became a real boy. Geppetto and Pinocchio lived happily ever after, knowing that truth and love made their bond stronger than ever.'''
+
+story_to_images(story)
