@@ -30,7 +30,7 @@ def add_text_bubble(image, text, x, y, face_width):
     draw.text((x + bubble_padding_x, y - bubble_height + bubble_padding_y), text, font=font, fill='black')
 
 def add_text_harder(image_path, output_path,dialogue):
-    base_options = python.BaseOptions(model_asset_path='detector.tflite')
+    base_options = python.BaseOptions(model_asset_path='blaze_face.tflite')
     options = vision.FaceDetectorOptions(base_options=base_options)
     detector = vision.FaceDetector.create_from_options(options)
 
