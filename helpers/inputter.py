@@ -53,9 +53,6 @@ class Inputter:
         else:
             print("Unsupported file format. Please provide a PDF or DOCX file.")
 
-def main():
+def readUploadedDocuments():
     inputter = Inputter() 
     inputter.read()
-
-if __name__ == "__main__":
-    main()
