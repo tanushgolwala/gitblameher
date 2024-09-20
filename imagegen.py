@@ -1,10 +1,10 @@
 import pollinations.ai as ai
 
-# Version 1
-model: ai.Image = ai.Image()
-image: ai.ImageObject = model.generate(
-      prompt="A cat playing with a ball",
-      # negative...width...height...height...seed...model...nologo
-)
-image.save("cat_playing_with_ball.png")
-print(image)
+def create_image(prompt: str, filename: str):
+    model = ai.Image()
+    image = model.generate(
+        prompt=prompt,
+        # negative...width...height...height...seed...model...nologo
+    )
+    image.save(filename)
+    print(image)
