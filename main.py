@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
-from helpers import imagegen
+from helpers import imagegen, musicgen
 from helpers.inputter import Inputter
 from typing import Annotated
 from utils.utils import get_flag_based_on_extension
@@ -24,3 +24,8 @@ async def create_upload_file(file: UploadFile):
     inputter = Inputter(file.file, get_flag_based_on_extension(file.filename))
     extracted_text = inputter.read()
     return {"extracted_text": extracted_text}
+
+@app.get("/generate-music-from-prompt")
+def generate_music_from_prompt(prompt: str, filename: str):
+    error, saved = musicgen.generate_music(prompt, filename)
+    return {"success": not(error), "filename": saved}

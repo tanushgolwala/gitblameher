@@ -47,6 +47,6 @@ def detect_main_face_and_add_text(image_path, output_path):
     else:
         print("No faces detected in the image.")
 
-input_image = "image_outputs/lincoln_speech.png"
+input_image = "image_outputs/tmst.png"
 output_image = "image_outputs/speeched.jpg"
 detect_main_face_and_add_text(input_image, output_image)
