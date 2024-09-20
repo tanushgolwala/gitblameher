@@ -11,10 +11,9 @@ def create_image(prompt: str, filename: str):
                   width=512,
                   height=512,
                   seed=2323
-                  # negative...width...height...height...seed...model...nologo
             )
-
-            image.save(filename)
-            print("Image saved")
+            image.save(f"image_outputs/{filename}.png")
+            image.save(f"image_outputs/{filename}.png")           
+            print(f"Image saved as {filename}.png")
       except Exception as e:
             print("Error:", e)
