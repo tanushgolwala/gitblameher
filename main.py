@@ -3,6 +3,7 @@ from helpers import imagegen, musicgen
 from helpers.inputter import Inputter
 from typing import Annotated
 from utils.utils import get_flag_based_on_extension
+from helpers.story_processor import story_to_images
 
 app = FastAPI()
 
@@ -29,3 +30,13 @@ async def create_upload_file(file: UploadFile):
 def generate_music_from_prompt(prompt: str, filename: str):
     error, saved = musicgen.generate_music(prompt, filename)
     return {"success": not(error), "filename": saved}
+
+@app.get("/generate-music-from-prompt")
+def generate_music_from_prompt(prompt: str, filename: str):
+    error, saved = musicgen.generate_music(prompt, filename)
+    return {"success": not(error), "filename": saved}
+
+@app.post("/create-story")
+def create_story_from_text(text: str):
+    story_to_images(text)
+    return {"status": "success"}
