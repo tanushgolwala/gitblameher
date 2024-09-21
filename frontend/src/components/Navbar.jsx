@@ -2,7 +2,7 @@ import React from "react";
 
 const Navbar = () => {
     return (
-        <nav className="w-[70vw] h-[7vh] bg-white bg-opacity-50 backdrop-blur-md rounded-xl flex items-center justify-between absolute mt-5 shadow-lg transition-all duration-300 ease-in-out hover:bg-opacity-70">
+        <nav className="w-[70vw] h-[7vh] z-10 bg-white bg-opacity-50 backdrop-blur-md rounded-xl flex items-center justify-between absolute mt-5 shadow-lg transition-all duration-300 ease-in-out hover:bg-opacity-70">
             <ul className="flex w-full justify-between items-center text-black mx-5">
                 <h1 className="text-black text-2xl transition-transform duration-300 ease-in-out hover:scale-105 hover:cursor-default">
                     Story<span className="font-bold italic">Scape</span>

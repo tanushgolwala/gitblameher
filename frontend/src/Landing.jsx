@@ -1,5 +1,8 @@
 import React from "react";
 import Navbar from "./components/Navbar";
+import GlowBox from "./components/GlowBox";
+import Services from "./components/Services";
+import KidsMode from "./components/KidsMode";
 
 const Landing = () => {
     return (
@@ -35,6 +38,9 @@ const Landing = () => {
                     </span>
                 </h1>
             </div>
+            <GlowBox />
+            <Services />
+            <KidsMode />
         </div>
     );
 };
