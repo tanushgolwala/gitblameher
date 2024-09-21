@@ -87,11 +87,13 @@ function Experience() {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-0">
       <SceneDisplay
         {...scenes[currentScene]}
         onPrevious={handlePrevious}
         onNext={handleNext}
+        currentScene={currentScene + 1}
+        totalScenes={scenes.length}
       />
     </div>
   );
