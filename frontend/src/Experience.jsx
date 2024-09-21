@@ -86,33 +86,21 @@ function Experience() {
         return <div>Loading scenes...</div>;
     }
 
+    if (scenes.length === 0) {
+        return <div>Loading scenes...</div>;
+    }
+
     return (
         <div className="p-0 h-dvh w-[100vw] bg-[#cbc2aa] bg-opacity-60 flex justify-center items-center">
             <SceneDisplay
                 {...scenes[currentScene]}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
-              currentScene={currentScene + 1}
-        totalScenes={scenes.length}
-      />
+                currentScene={currentScene + 1}
+                totalScenes={scenes.length}
+            />
         </div>
     );
 }
 
-  if (scenes.length === 0) {
-    return <div>Loading scenes...</div>;
-  }
-
-  return (
-    <div className="p-0">
-      <SceneDisplay
-        {...scenes[currentScene]}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-        currentScene={currentScene + 1}
-        totalScenes={scenes.length}
-      />
-    </div>
-  );
-}
 export default Experience;
