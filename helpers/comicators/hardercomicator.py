@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
+import os
 from PIL import Image, ImageDraw, ImageFont
+print("Booting Models...")
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+
 
 def add_text_bubble(image, text, x, y, face_width):
     draw = ImageDraw.Draw(image)
