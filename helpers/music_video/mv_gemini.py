@@ -121,5 +121,5 @@ def generate_music_video(song_name, artist):
         print("Lyrics not found for the song")
         return
 
-generate_music_video('naina', 'diljit dosanjh')
+generate_music_video('a little piece of heaven', 'avenged sevenfold')
 
