@@ -40,7 +40,6 @@ def create_image_cloudflare(prompt: str, filename: str, summary:str=""):
             "prompt": prompt,
             "height": 1024,
             "width": 1024,
-
       }
       response = requests.post(url, headers=headers, json=payload)
       if response.status_code == 200:
@@ -54,3 +53,5 @@ def create_image_cloudflare(prompt: str, filename: str, summary:str=""):
       else:
             print(f"Request failed with status code {response.status_code}: {response.text}")
 
+
+create_image_cloudflare("A beautiful sunset over the ocean with a lighthouse in the distance", "sunset_lighthouse", "A serene scene of a lighthouse overlooking the ocean at sunset.")

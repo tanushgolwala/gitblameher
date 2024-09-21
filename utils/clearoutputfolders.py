@@ -29,4 +29,4 @@ def copy_to_frontend():
 
 
 # Clear and copy folders
-clear_output_folders()
+copy_to_frontend()

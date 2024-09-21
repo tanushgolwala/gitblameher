@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   PlayIcon,
   PauseIcon,
@@ -38,13 +38,19 @@ const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 flex items-center justify-between px-4">
           <button
-            onClick={onPrevious}
+            onClick={() => {
+              setIsPlaying(false);
+              onPrevious();
+            }}
             className="bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
           >
             <ChevronLeftIcon className="h-8 w-8 text-gray-800" />
           </button>
           <button
-            onClick={onNext}
+            onClick={() => {
+              setIsPlaying(false);
+              onNext();
+            }}
             className="bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
           >
             <ChevronRightIcon className="h-8 w-8 text-gray-800" />
@@ -70,7 +76,7 @@ const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
           <span className="ml-3 text-sm text-gray-500">
             {isPlaying ? "Playing" : "Paused"}
           </span>
-          <audio ref={audioRef} src={audioSrc} className="hidden" />
+          <audio ref={audioRef} src={audioSrc} loop className="hidden" />
         </div>
       </div>
     </div>
