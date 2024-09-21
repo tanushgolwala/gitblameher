@@ -102,7 +102,8 @@ def generate_images_and_audio_for_scenes(scenes):
                 print(f"Generating image and audio for scene {i+1}...")
                 prompt = get_image_prompt(scene)
                 audio_prompt = get_audio_prompt(scene)
-
+                
+                print("Generating image for scene", i+1)
                 if prompt:
                     try:
                         create_image_cloudflare(prompt, f'scene_{i+1}', get_summary(scene))
@@ -110,22 +111,23 @@ def generate_images_and_audio_for_scenes(scenes):
                         print(f"Error generating image for scene {i+1}")
                 else:
                     print(f"Prompt not found for scene {i+1}")
-            
+
+                print("Generating audio for scene", i+1)
                 if audio_prompt:
                     # audio_tasks.append(pool.apply_async(generate_audio, (audio_prompt, i)))
                     print("Generating audio for scene", i+1)
-                    audio_tasks.append(musicgen.generate_music(audio_prompt, f'audio_outputs/scene_{i+1}.wav', 600))
+                    audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
                     print("Audio generated for scene", i+1)
                 
-            # Wait for all audio generation tasks to complete
-            # for task in audio_tasks:
-            #     result = task.get()
-            #     print(result)
             except Exception as e:
-                print(f"Error in scene {i+1}: {e}. Retrying...")
+                print(f"Error in generate_images_and_audio_for_scenes: {e}. Retrying scene {i+1}...")
                 i = i - 1
                 continue
-
+        
+        # Wait for all audio generation tasks to complete
+        # for task in audio_tasks:
+        #     result = task.get()
+        #     print(result)
         
 
 def story_to_images(story):
