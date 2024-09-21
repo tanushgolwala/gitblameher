@@ -59,7 +59,7 @@ def get_scenes(story, delimiter="*****", kidsMode= False):
 7. Suggest a background audio prompt for an AI background music generator that could enhance the scene. Do make sure EXTREME descriptive words are used (for example "epic" for an intense scene, "comical" for funny scenes etc.) and do mention "background music" in the prompt.
 8. Suggest a vivid visual element that could represent the scene in a picture.
 9. Using the above details provide a prompt that could be used to generate an image using an AI model, that depicts every part of the image. For each scene, the prompt should be detailed enough to capture the essence of the scene and provide a clear visual direction for the image generation, and also provide enough context with respect to characters, settings etc. such that there is consistency in how images are generated throughout the book.
-10. Provide one dialoge for each scene by the main character in that scene. The dialogue should be a short sentence that captures the essence of the scene.
+10. Provide one dialogue for each scene by the main character in that scene. The dialogue should be a short sentence that captures the essence of the scene.
 
 Format the output as follows:
 
@@ -90,6 +90,8 @@ Here is the text:
             HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
         })
         
+        print(response)
+        
         if handle_safety_error(response):
             return []
         
@@ -107,13 +109,13 @@ def generate_images_and_audio_for_scenes(scenes):
     for i, scene in enumerate(scenes):
         print(f"Processing scene {i+1}...")
         prompt = get_image_prompt(scene)
-        audio_prompt = get_audio_prompt(scene)
+        # audio_prompt = get_audio_prompt(scene)
         dialogue = get_dialogue(scene)
         
-        if audio_prompt:
-            print(f"Generating audio for scene {i+1}")
-            audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
-            print(f"Audio generated for scene {i+1}")
+        # if audio_prompt:
+        #     print(f"Generating audio for scene {i+1}")
+        #     audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
+        #     print(f"Audio generated for scene {i+1}")
         
         if prompt:
             try:
