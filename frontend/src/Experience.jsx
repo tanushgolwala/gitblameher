@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import SceneDisplay from "./components/Scenedisplay";
+import InputScreen from "./components/InputScreen";
+import Loader from "./components/Loader";
 
 function Experience() {
   const [scenes, setScenes] = useState([]);
@@ -73,26 +75,11 @@ function Experience() {
   };
 
   if (isLoading) {
-    return <div>Processing file...</div>;
+    return <Loader />;
   }
 
   if (!isFileProcessed) {
-    return (
-      <div className="p-4">
-        <h2 className="mb-4">Upload a file to begin</h2>
-        <input
-          type="file"
-          accept=".pdf,.docx,.doc"
-          onChange={handleFileUpload}
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0
-            file:text-sm file:font-semibold
-            file:bg-violet-50 file:text-violet-700
-            hover:file:bg-violet-100"
-        />
-      </div>
-    );
+    return <InputScreen handleFileUpload={handleFileUpload} />;
   }
 
   if (scenes.length === 0) {
