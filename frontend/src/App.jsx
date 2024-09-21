@@ -9,7 +9,7 @@ function App() {
   useEffect(() => {
     const loadScenes = async () => {
       const sceneData = [];
-      const sceneCount = 6; // Update this based on the number of scenes you have
+      const sceneCount = 9; // Update this based on the number of scenes you have
 
       for (let i = 1; i <= sceneCount; i++) {
         const imageSrc = `/image_outputs/scene_${i}.png`; // Updated path

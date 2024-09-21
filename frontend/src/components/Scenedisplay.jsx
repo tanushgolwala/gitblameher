@@ -31,7 +31,11 @@ const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="relative">
-        <img className="w-full h-96 object-cover" src={imageSrc} alt="Scene" />
+        <img
+          className="w-full h-full object-cover"
+          src={imageSrc}
+          alt="Scene"
+        />
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 flex items-center justify-between px-4">
           <button
             onClick={onPrevious}
