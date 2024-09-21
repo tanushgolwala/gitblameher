@@ -23,4 +23,4 @@ def get_song_lyrics(song_info, artist=Optional[str]):
     
     return song.lyrics
 
-print(get_song_lyrics('Paradise', 'Coldplay'))
+# print(get_song_lyrics('Paradise', 'Coldplay'))

@@ -2,6 +2,10 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
 from genius_config import load_config
+from mv_imagegen import create_image_cloudflare
+from download_song import get_url_and_download_song
+from genius import get_song_lyrics
+from generate_mv import create_music_video
 
 def initialize_model():
     config = load_config()
@@ -9,7 +13,7 @@ def initialize_model():
     return genai.GenerativeModel(config['model_name'])
 
 def get_image_prompt(scene_info):
-    match = re.search(r'\*\*Prompt:\*\*(.*)', scene_info)
+    match = re.search(r'Prompt:(.*)', scene_info)
     return match.group(1).strip() if match else None
 
 def handle_safety_error(response):
@@ -25,7 +29,7 @@ def handle_safety_error(response):
 
 def get_scenes(lyrics, delimiter="*****", kidsMode= False):
     model = initialize_model()
-    prompt = '''Given the lyrics of a song, which could be in ANY language (eg english, hindi, french, punjabi etc) - I want to convert it into a music video, which comprises of a series of cutscenes. Each cutscene HAS to tell the story of the song in a visual format, and EVERY cutsene must specifically mention the entire context of the song such that it's emotion is well and truly passed. Each scene should represent 5-7 seconds of the song. When put together, all the scenes must form a coherent story that aligns with the lyrics of the song. Do not miss out on any content, even if it is deemed explicit - some songs are like that. Keep in mind, I will use AI to generate images for the scenes based on your prompt for the scene. Have AT LEAST 30 scenes:
+    prompt = '''Given the lyrics of a song, which could be in ANY language (eg english, hindi, french, punjabi etc) - I want to convert it into a music video, which comprises of a series of cutscenes. Each cutscene HAS to tell the story of the song in a visual format, and EVERY cutsene must specifically mention the entire context of the song such that it's emotion is well and truly passed. Each scene should represent 5-7 seconds of the song. When put together, all the scenes must form a coherent story that aligns with the lyrics of the song. Do not miss out on any content, even if it is deemed explicit - some songs are like that. Keep in mind, I will use AI to generate images for the scenes based on your prompt for the scene. Have AT LEAST 45 scenes:
 
 1. Identify the key action or event that defines the scene. If it is a hum, or something like "oh-oh-oh" etc which is repeated throughout the scene (any filler, inexplicable lyric), make sure it is duly noted - the image generated must be something that acts as a filler appropriate to the context as well.
 2. List the characters present in the scene. None is okay as well.
@@ -55,6 +59,7 @@ Prompt: [Prompt for image generation]
 *****
 
 Repeat this structure for each significant scene in the book, making sure to include the string of 5 asterisks after each scene and ensuring that the breakdown captures the essence of the story and provides enough detail for creating illustrations.
+MAKE SURE THE 5 ASTERISKS DELIMITER IS THERE
 Here is the text:
 '''
 
@@ -70,7 +75,6 @@ Here is the text:
             return []
         
         scenes = response.text.split(delimiter)
-        print(scenes[0])
         return [scene.strip() for scene in scenes if scene.strip()]
     
     except Exception as e:
@@ -78,119 +82,44 @@ Here is the text:
         return []
 
 
-# def generate_images_and_audio_for_scenes(scenes):
-#     # with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-#         audio_tasks = []
-#         for i in range(len(scenes)):
-#             try:
-#                 scene = scenes[i]
-#                 print(f"Generating image and audio for scene {i+1}...")
-#                 prompt = get_image_prompt(scene)
-#                 audio_prompt = get_audio_prompt(scene)
-                
-#                 print("Generating image for scene", i+1)
-#                 if prompt:
-#                     try:
-#                         create_image_cloudflare(prompt, f'scene_{i+1}', get_summary(scene))
-#                     except:
-#                         print(f"Error generating image for scene {i+1}")
-#                 else:
-#                     print(f"Prompt not found for scene {i+1}")
+def generate_images_and_audio_for_scenes(scenes):
+    for i in range(len(scenes)):
+        try:
+            scene = scenes[i]
+            print(scene)
+            print(f"Generating image for scene {i+1}...")
+            prompt = get_image_prompt(scene)
+            
+            print("Generating image for scene", i+1)
+            if prompt:
+                try:
+                    create_image_cloudflare(prompt, f'music_video_scene_{i+1}')
+                except:
+                    print(f"Error generating image for scene {i+1}")
+            else:
+                print(f"Prompt not found for scene {i+1}")
 
-#                 print("Generating audio for scene", i+1)
-#                 if audio_prompt:
-#                     # audio_tasks.append(pool.apply_async(generate_audio, (audio_prompt, i)))
-#                     print("Generating audio for scene", i+1)
-#                     audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
-#                     print("Audio generated for scene", i+1)
-                
-#             except Exception as e:
-#                 print(f"Error in generate_images_and_audio_for_scenes: {e}. Retrying scene {i+1}...")
-#                 i = i - 1
-#                 continue
-        
-#         # Wait for all audio generation tasks to complete
-#         # for task in audio_tasks:
-#         #     result = task.get()
-#         #     print(result)
+        except Exception as e:
+            print(f"Error in generate_images_and_audio_for_scenes: {e}. Retrying scene {i+1}...")
+            i = i - 1
+            continue
         
 
-def story_to_images(story):
+def story_to_images(story, song_name):
     scenes = get_scenes(story)
-    print(scenes)
-    # generate_images_and_audio_for_scenes(scenes)
+    # print(scenes)
+    n = len(scenes)
+    generate_images_and_audio_for_scenes(scenes)
+    create_music_video(n, song_name)
+    
+def generate_music_video(song_name, artist):
+    lyrics = get_song_lyrics(song_name, artist)
+    if lyrics:
+        get_url_and_download_song(song_name, artist)
+        story_to_images(story=lyrics, song_name=song_name)
+    else:
+        print("Lyrics not found for the song")
+        return
 
+generate_music_video('naina', 'diljit dosanjh')
 
-lyrics = '''
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-
-[Verse 1]
-When she was just a girl
-She expected the world
-But it flew away from her reach
-So she ran away in her sleep
-
-[Chorus]
-And dreamed of para-, para-, paradise
-Para-, para-, paradise
-Para-, para-, paradise
-Every time she closed her eyes
-
-[Post-Chorus]
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-
-[Verse 2]
-When she was just a girl
-She expected the world
-But it flew away from her reach
-And the bullets catch in her teeth
-See Coldplay LiveGet tickets as low as $67You might also like[Pre-Chorus]
-Life goes on, it gets so heavy
-The wheel breaks the butterfly
-Every tear, a waterfall
-In the night, the stormy night, she'd close her eyes
-In the night, the stormy night, away she'd fly
-
-[Chorus]
-And dream of para-, para-, paradise
-Para-, para-, paradise
-Para-, para-, paradise
-Oh, oh-oh, oh-oh, oh-oh-oh
-She'd dream of para-, para-, paradise
-Para-, para-, paradise
-Para-, para-, paradise
-Oh, oh-oh, oh-oh, oh-oh-oh
-
-[Bridge]
-La, la-la, la-la-la
-La, la-la, la-la-la
-La, la-la, la-la-la, la-la
-So lying underneath those stormy skies
-She said, "Oh, oh-oh-oh-oh, I know the sun must set to rise"
-
-[Chorus]
-This could be para-, para-, paradise
-Para-, para-, paradise
-This could be para-, para-, paradise
-Oh, oh-oh, oh-oh, oh-oh-oh
-This could be para-, para-paradise
-Para-, para-, paradise
-This could be para-, para-, paradise
-Oh, oh-oh, oh-oh, oh-oh-oh
-[Instrumental Break]
-
-[Chorus]
-This could be para-, para-, paradise
-This could be para-, para-, paradise
-This could be para-, para-, paradise
-Oh-oh-oh-oh-oh oh-oh-oh
-
-[Outro]
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-Ooh-ooh-ooh, ooh-ooh-ooh, ooh-ooh-ooh
-Ooh-ooh-ooh, ooh-ooh-ooh101Embed
-'''
-story_to_images(story=lyrics)
