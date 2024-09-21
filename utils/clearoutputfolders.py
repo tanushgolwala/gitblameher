@@ -1,7 +1,6 @@
 import os
 import shutil
 
-
 def clear_output_folders():
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,7 +18,9 @@ def copy_to_frontend():
 
     for folder in ['../audio_outputs', '../image_outputs', '../summary_outputs']:
         source_folder = os.path.join(current_dir, folder)
+        folder = folder.replace('../', '')
         destination_folder = os.path.join(frontend_public_path, folder)
+        print(destination_folder)
 
         if os.path.exists(destination_folder):
             shutil.rmtree(destination_folder)
@@ -28,4 +29,4 @@ def copy_to_frontend():
 
 
 # Clear and copy folders
-copy_to_frontend()
+clear_output_folders()
