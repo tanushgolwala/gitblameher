@@ -3,7 +3,8 @@ from helpers import imagegen, musicgen
 from helpers.inputter import Inputter
 from typing import Annotated
 from utils.utils import get_flag_based_on_extension
-from helpers.story_processor import story_to_images
+from helpers.story_processor import *
+from utils.clearoutputfolders import copy_to_frontend
 
 app = FastAPI()
 
@@ -35,3 +36,13 @@ def generate_music_from_prompt(prompt: str, filename: str):
 def create_story_from_text(text: str):
     story_to_images(text)
     return {"status": "success"}
+
+@app.post("/create-story-from-file")
+def create_story_from_file(file: UploadFile):
+    inputter = Inputter(file.file, get_flag_based_on_extension(file.filename))
+    extracted_text = inputter.read()
+    cleaned_text = inputter.clean_text(extracted_text)
+    numScenes = story_to_images(cleaned_text)
+    copy_to_frontend()
+
+    return {"sceneCount": numScenes}

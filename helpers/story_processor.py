@@ -23,8 +23,8 @@ def get_audio_prompt(scene_info):
     match = re.search(r'\*\*Audio:\*\*(.*?)\*\*Visual', scene_info, re.DOTALL)
     return match.group(1).strip() if match else None
 
-def generate_audio(audio_prompt, scene_index):
-    return musicgen.generate_music(audio_prompt, f'scene_{scene_index+1}')
+# def generate_audio(audio_prompt, scene_index):
+#     return generate_music(audio_prompt, f'scene_{scene_index+1}')
 
 def handle_safety_error(response):
     if response.candidates:
@@ -84,9 +84,8 @@ Here is the text:
         
         if handle_safety_error(response):
             return []
-        
+        print(response.text)
         scenes = response.text.split(delimiter)
-        print(scenes[0])
         return [scene.strip() for scene in scenes if scene.strip()]
     
     except Exception as e:
@@ -134,49 +133,43 @@ def generate_images_and_audio_for_scenes(scenes):
 def story_to_images(story):
     scenes = get_scenes(story)
     generate_images_and_audio_for_scenes(scenes)
+    return len(scenes)
 
 
-story = '''
-### The Three-Headed Dog
-It starts when Harry, Ron, Hermione, and Neville are out of bed after hours and trying to avoid being caught by Filch, the caretaker. They flee through dark corridors, their footsteps echoing against the cold stone, until they reach a door. In their panic, they slip inside without checking where it leads. 
+if __name__ == "__main__":
+    story = '''
+    Julius Caesar’s life is filled with remarkable events that significantly influenced Roman history. Here’s a deeper look into his story:
 
-Inside, they come face-to-face with Fluffy, the enormous three-headed dog. Its gigantic paws shuffle across the floor, each head snapping and snarling with teeth bared. The creature is clearly guarding something. While Harry’s heart pounds, he notices that Fluffy stands on a trapdoor. The significance of this doesn’t escape him, and as the trio hurriedly retreats from the room, it dawns on them that whatever Fluffy is guarding must be of great importance—likely the Philosopher's Stone itself.
+    ### Early Life and Rise to Power
+    Caesar was born into the patrician class, a noble lineage, but his family wasn’t particularly wealthy or powerful at the time. He married into powerful political circles, and his early career was marked by political maneuvers, including an alliance with Crassus, Rome’s wealthiest man, and Pompey, Rome’s greatest general. This alliance, known as the **First Triumvirate** (60 BCE), helped him secure the position of consul in 59 BCE.
 
-### Discovering the Plot
-From this moment on, Harry, Ron, and Hermione can't shake the idea that someone is trying to steal the stone. They suspect Professor Snape, whose strange behavior throughout the school year—especially after Harry’s broom was jinxed during a Quidditch match—makes him the obvious culprit in their eyes. The three friends decide they need to stop whoever is trying to get to the stone.
+    ### The Gallic Wars and Military Genius
+    After his consulship, Caesar was appointed governor of several Roman provinces, including Gaul. From 58 to 50 BCE, he led the **Gallic Wars**, expanding Roman territory and subjugating various tribes across modern-day France, Belgium, and parts of Germany. Caesar’s victories were both brutal and brilliant, showcasing his military strategy and leadership. His conquest of Gaul brought immense wealth and prestige, making him one of the most powerful men in Rome.
 
-The trio investigates further, and through a series of clues, they learn that the stone, created by Nicolas Flamel, grants immortality and is hidden behind a series of magical defenses. With no time to lose, they resolve to descend through the trapdoor and protect the stone themselves.
+    During this period, he also wrote his famous work, *Commentarii de Bello Gallico* (Commentaries on the Gallic War), detailing his campaigns and solidifying his image as a skilled general.
 
-### Entering the Trapdoor
-On the night of their plan, they sneak through the castle once more, covered by Harry's invisibility cloak. Reaching the door guarded by Fluffy, they discover Hagrid’s unintentional tip: Fluffy can be lulled to sleep with music. Using a small harp, they charm the beast, and it soon collapses into a heavy slumber. Carefully, they slip through the trapdoor, lowering themselves into the unknown below.
+    ### Conflict with Pompey and the Civil War
+    As Caesar’s power grew, tensions with Pompey and the Senate escalated. Pompey, once Caesar’s ally, became his adversary, aligning with the Senate to curb Caesar’s influence. In 49 BCE, the Senate ordered Caesar to disband his army and return to Rome as a private citizen. Refusing, Caesar made the momentous decision to **cross the Rubicon River** with his army, famously saying, “The die is cast.” This act of defiance was treason and initiated a civil war.
 
-### Devil's Snare
-Their descent takes them into a dark, eerie room filled with writhing, snake-like vines—the Devil’s Snare. As soon as they land, the vines tighten around them like deadly ropes. Hermione remembers that Devil's Snare hates light and heat, so she conjures a bright blue flame, causing the plant to recoil and release them. They breathe a sigh of relief, but know that this is only the beginning.
+    Caesar swiftly marched on Rome, forcing Pompey and his supporters to flee to Greece. After pursuing and defeating Pompey’s forces in a series of battles, most notably at the **Battle of Pharsalus** (48 BCE), Caesar emerged victorious. Pompey fled to Egypt, where he was assassinated. Caesar then became embroiled in Egyptian politics, supporting Cleopatra’s claim to the throne. Their famous relationship resulted in the birth of a son, **Caesarian**.
 
-### The Winged Keys
-The next challenge awaits in a vast chamber filled with fluttering, enchanted keys. A broomstick hovers nearby, and they quickly realize that the key to the next door is hidden among the chaotic swarm. Harry mounts the broomstick, his Seeker instincts kicking in, as he darts through the air, weaving through the mass of glittering wings. After a tense chase, he manages to grab the correct key, and they hurry to the next room.
+    ### Dictatorship and Reforms
+    Returning to Rome, Caesar was appointed **dictator** in 49 BCE, initially for a short term, but in 44 BCE he was declared **dictator for life**. During his rule, Caesar enacted numerous reforms aimed at strengthening Rome. He restructured the debt system, reformed the calendar (introducing the **Julian calendar**, a precursor to the modern Gregorian calendar), and expanded the Senate to include representatives from across the Roman territories.
 
-### The Chessboard
-Here, they encounter a life-sized enchanted chessboard. To move forward, they must play through the game. Ron, a skilled chess player, takes charge, directing their moves from atop the giant pieces. The match is grueling, and the chess pieces battle fiercely. With every move, Ron calculates the best strategy to win, even if it means sacrifice. Near the end, Ron sees that the only way for Harry and Hermione to advance is if he allows himself to be taken. In a bold and selfless move, Ron positions himself where the opposing queen strikes him down, leaving him unconscious. Harry and Hermione move forward with heavy hearts, knowing Ron’s sacrifice could be in vain if they fail.
+    Caesar also granted citizenship to people in the provinces and began extensive building projects, reshaping the city of Rome. His reforms, however, increasingly alienated the Roman elite, particularly the Senate, who feared he was becoming a monarch.
 
-### The Potions Riddle
-The next room is filled with black flames blocking their path and purple flames guarding the entrance behind them. In the middle stands a table with several potions. It’s a test of logic, and Hermione takes the lead, reading the riddle carefully. After a tense moment of thought, she identifies the correct potions, and Harry drinks one that will allow him to pass through the black flames. Hermione, meanwhile, stays behind, ready to help Ron and summon help if needed.
+    ### The Ides of March and Caesar’s Assassination
+    Despite his popularity among the common people, many senators saw Caesar as a threat to the Republic. A group of 60 senators, including his close friend **Brutus** and **Cassius**, conspired to assassinate him. On **March 15, 44 BCE**, the Ides of March, Caesar was attacked in the Senate chamber. He was stabbed 23 times, and according to legend, his last words were “**Et tu, Brute?**” (You too, Brutus?), expressing his shock at Brutus’s betrayal.
 
-### The Final Confrontation: Quirrell
-Harry enters the final chamber, expecting to face Snape—but instead, it’s Professor Quirrell who stands before the Mirror of Erised. The timid professor, once thought to be afraid of his own shadow, is revealed as the true villain. It is Quirrell who has been trying to steal the stone all along, under the influence of someone far more sinister: Lord Voldemort.
+    ### Aftermath and Legacy
+    Caesar’s assassination plunged Rome into further civil wars. His adopted heir and grandnephew, **Octavian** (later Augustus), along with Mark Antony, sought revenge on the conspirators, ultimately defeating them in the **Battle of Philippi**. This paved the way for the eventual rise of the Roman Empire, with Octavian becoming its first emperor.
 
-Harry is frozen in shock as Quirrell explains that Voldemort has been sharing his body. The Dark Lord, too weak to survive on his own, has been hiding within Quirrell, biding his time. Quirrell orders Harry to look into the Mirror of Erised, which shows one’s deepest desire. As Harry gazes into the mirror, he sees his reflection holding the Philosopher’s Stone—and to his surprise, he feels the stone drop into his pocket. He doesn’t reveal this to Quirrell, trying to play for time.
+    Caesar’s legacy is profound:
+    - He ended the Roman Republic and laid the foundation for the Roman Empire.
+    - His military campaigns, particularly in Gaul, extended Roman influence and set the standard for future generals.
+    - His reforms, particularly the Julian calendar, had lasting impacts.
+    - The title “Caesar” became synonymous with leadership, later used by emperors and influencing titles like “Kaiser” in Germany and “Tsar” in Russia.
 
-But Voldemort, sensing Harry’s deception, commands Quirrell to seize the boy. In the ensuing struggle, Harry’s touch causes Quirrell immense pain. His skin blisters and burns wherever Harry grabs him. Voldemort, desperate, urges Quirrell to kill Harry, but Quirrell crumbles under Harry’s touch. With every second, Quirrell weakens, and Voldemort, in a final act of desperation, abandons his host’s body and flees as a wraith, leaving Harry to collapse, unconscious.
-
-### Dumbledore's Arrival and Aftermath
-When Harry awakens, he’s in the hospital wing, with Dumbledore sitting at his side. The headmaster explains that the stone has been destroyed, and with it, any chance of Voldemort returning to full power for now. Dumbledore also reveals that Harry’s mother, Lily, left a powerful protection on him when she sacrificed her life, which is why Quirrell couldn’t touch him.
-
-Harry learns that Ron and Hermione are safe, and they share a moment of quiet relief, knowing they prevented a great disaster. However, Harry also understands that Voldemort is not gone for good—only driven away, waiting for another chance to rise.
-
-### The House Cup
-As the school year draws to a close, Harry, Ron, and Hermione return to normal life at Hogwarts, but not without one last surprise. During the House Cup feast, Dumbledore awards points to Gryffindor for the bravery, intelligence, and friendship they displayed during their adventure. With these points, Gryffindor wins the House Cup, much to the shock and delight of the entire house.
-
-The trio’s first year at Hogwarts ends with victory, but also with the knowledge that greater challenges lie ahead.
-'''
-story_to_images(story=story)
+    Julius Caesar’s life is a testament to ambition, military genius, and political power, but also a reminder of how unchecked ambition can lead to betrayal and downfall.
+    '''
+    story_to_images(story=story)
