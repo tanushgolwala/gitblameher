@@ -2,8 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
-from hardercomicator import add_text_harder
-
+from comicators.hardercomicator import add_text_harder
 
 def add_text_bubble(image, text, x, y, face_width):
     draw = ImageDraw.Draw(image)
@@ -71,11 +70,11 @@ def face_text_adder(image_path, output_path, dialogue):
         print("No faces detected in the image.... Adding Harder")
         add_text_harder(image_path, output_path, dialogue)
 
+# n = int(input("Enter what kind of image you want to process (1.Straight Face, 2. Sideways Face): "))
+# if n == 1:
+#     face_text_adder("image_inputs/lincoln_speech.png", "image_outputs/lincoln_speech_text.png",
+#                     "I am not bound to win,\n but I am bound to be true")
+# else:
+#     face_text_adder("image_inputs/sherlock.jpg",
+#                     "image_outputs/sherlock_text.png", "Elementary, my dear Watson")
 
-n = int(input("Enter what kind of image you want to process (1.Straight Face, 2. Sideways Face): "))
-if n == 1:
-    face_text_adder("image_inputs/lincoln_speech.png", "image_outputs/lincoln_speech_text.png",
-                    "I am not bound to win,\n but I am bound to be true")
-else:
-    face_text_adder("image_inputs/sherlock.jpg",
-                    "image_outputs/sherlock_text.png", "Elementary, my dear Watson")

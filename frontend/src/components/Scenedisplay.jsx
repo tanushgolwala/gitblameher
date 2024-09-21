@@ -6,7 +6,15 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/solid";
 
-const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
+const SceneDisplay = ({
+  imageSrc,
+  summary,
+  audioSrc,
+  onPrevious,
+  onNext,
+  sceneCount,
+  totalScenes,
+}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
@@ -29,10 +37,12 @@ const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-      <div className="relative">
+    <div className="max-w-5xl mx-auto bg-black rounded-xl shadow-lg overflow-hidden">
+      <div className="relative" style={{ paddingBottom: "56.25%" }}>
+        {" "}
+        {/* 16:9 aspect ratio */}
         <img
-          className="w-full h-full object-cover"
+          className="absolute top-0 left-0 w-full h-full object-cover"
           src={imageSrc}
           alt="Scene"
         />
@@ -59,7 +69,7 @@ const SceneDisplay = ({ imageSrc, summary, audioSrc, onPrevious, onNext }) => {
       </div>
       <div className="p-6">
         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-2">
-          Scene
+          Scene {`${sceneCount} of ${totalScenes}`}
         </div>
         <p className="text-gray-500 text-sm mb-4">{summary}</p>
         <div className="flex items-center">
