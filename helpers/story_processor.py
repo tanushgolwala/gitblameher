@@ -1,9 +1,9 @@
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
-from config import load_config
-from imagegen import create_image,  create_image_cloudflare
-import musicgen
+from helpers.config import load_config
+from helpers.imagegen import create_image,  create_image_cloudflare
+import helpers.musicgen
 
 def initialize_model():
     config = load_config()
@@ -116,7 +116,7 @@ def generate_images_and_audio_for_scenes(scenes):
                 if audio_prompt:
                     # audio_tasks.append(pool.apply_async(generate_audio, (audio_prompt, i)))
                     print("Generating audio for scene", i+1)
-                    audio_tasks.append(musicgen.generate_music(audio_prompt, f'scene_{i+1}'))
+                    audio_tasks.append(helpers.musicgen.generate_music(audio_prompt, f'audio_outputs/scene_{i+1}.wav',600))
                     print("Audio generated for scene", i+1)
                 
             except Exception as e:
