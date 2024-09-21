@@ -12,7 +12,7 @@ const Navbar = () => {
                     <NavItem>Home</NavItem>
                     <NavItem>Services</NavItem>
                     <NavItem>Kids Mode</NavItem>
-                    <button className="bg-[#295F98] text-white py-2 px-8 rounded-lg transition-all duration-300 ease-in-out hover:bg-[#1e4571] hover:shadow-md">
+                    <button className="bg-gradient-to-r from-[#f97187] to-[#a98af7] text-white py-2 px-8 rounded-lg transition-all duration-300 ease-in-out hover:bg-[#1e4571] hover:shadow-md">
                         Login
                     </button>
                 </div>
@@ -23,10 +23,10 @@ const Navbar = () => {
 
 const NavItem = ({ children }) => (
     <li className="relative group">
-        <a className="cursor-pointer transition-colors duration-300 ease-in-out hover:text-[#295F98]">
+        <a className="cursor-pointer transition-colors duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#f97187] hover:to-[#a98af7] hover:text-transparent hover:bg-clip-text">
             {children}
         </a>
-        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#295F98] transition-all duration-300 ease-in-out group-hover:w-full"></span>
+        <span className="absolute bottom-0 left-0 w-0 h-0.5 hover:bg-gradient-to-r hover:from-[#f97187] hover:to-[#a98af7] transition-all duration-300 ease-in-out group-hover:w-full"></span>
     </li>
 );
 
