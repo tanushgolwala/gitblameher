@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Experience from "./Experience";
 import Landing from "./Landing";
 import Music from "./components/Music";
-import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
           <Route path="/music" element={<Music />} />
         </Routes>
       </Router>
-      <Footer />
     </>
   );
 }

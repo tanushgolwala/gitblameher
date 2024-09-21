@@ -8,7 +8,6 @@ const Navbar = () => {
                     Story<span className="font-bold italic">Scape</span>
                 </h1>
                 <div className="flex items-center space-x-6">
-                    <NavItem>Settings</NavItem>
                     <NavItem>Home</NavItem>
                     <NavItem>Services</NavItem>
                     <NavItem>Kids Mode</NavItem>

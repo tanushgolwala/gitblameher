@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import GlowBox from "./components/GlowBox";
 import Services from "./components/Services";
 import KidsMode from "./components/KidsMode";
+import Footer from "./components/Footer";
 
 const Landing = () => {
     return (
@@ -41,6 +42,7 @@ const Landing = () => {
             <GlowBox />
             <Services />
             <KidsMode />
+            <Footer />
         </div>
     );
 };
