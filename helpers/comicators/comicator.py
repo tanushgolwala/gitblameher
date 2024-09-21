@@ -4,12 +4,12 @@ from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from comicators.hardercomicator import add_text_harder
 
-def add_text_bubble(image, text, x, y, face_width):
+def add_text_bubble(image, text, x, y, face_width, face_height):
     draw = ImageDraw.Draw(image)
     font_size = int(face_width * 0.15)
     font = ImageFont.truetype("arial.ttf", font_size)
 
-    max_text_width = int(face_width * 0.9)
+    max_text_width = int(face_width * 1.2)
 
     lines = []
     for line in text.split('\n'):
@@ -28,23 +28,38 @@ def add_text_bubble(image, text, x, y, face_width):
     bubble_padding_x = int(face_width * 0.1)
     bubble_padding_y = int(face_width * 0.05)
 
-    bubble_width = max_line_width + 3 * bubble_padding_x
+    bubble_width = max_line_width + 2 * bubble_padding_x
     total_text_height = sum(text_heights) + (len(lines) - 1) * bubble_padding_y
-    bubble_height = total_text_height + 3 * bubble_padding_y
+    bubble_height = total_text_height + 2 * bubble_padding_y
 
+    # Adjust bubble position to be closer to the face
+    bubble_x = x + face_width // 2 - bubble_width // 2
+    bubble_y = y - bubble_height - int(face_height * 0.1)  # Slightly above the face
+
+    # Draw the main bubble
     ellipse_padding = int(face_width * 0.02)
-    draw.ellipse([x - ellipse_padding,
-                  y - bubble_height - ellipse_padding,
-                  x + bubble_width + ellipse_padding,
-                  y + ellipse_padding],
+    draw.ellipse([bubble_x - ellipse_padding,
+                  bubble_y - ellipse_padding,
+                  bubble_x + bubble_width + ellipse_padding,
+                  bubble_y + bubble_height + ellipse_padding],
                  fill='white', outline='black')
 
-    current_y = y - bubble_height + bubble_padding_y
+    # Draw the pointer
+    pointer_width = int(face_width * 0.2)
+    pointer_height = int(face_height * 0.1)
+    pointer_x = x + face_width // 2 - pointer_width // 2
+    pointer_y = bubble_y + bubble_height
+    draw.polygon([
+        (pointer_x, pointer_y),
+        (pointer_x + pointer_width, pointer_y),
+        (pointer_x + pointer_width // 2, pointer_y + pointer_height)
+    ], fill='white', outline='black')
+
+    current_y = bubble_y + bubble_padding_y
     for i, line in enumerate(lines):
-        draw.text((x + bubble_padding_x, current_y),
+        draw.text((bubble_x + bubble_padding_x, current_y),
                   line, font=font, fill='black')
         current_y += text_heights[i] + bubble_padding_y
-
 
 def face_text_adder(image_path, output_path, dialogue):
     face_cascade = cv2.CascadeClassifier(
@@ -62,7 +77,7 @@ def face_text_adder(image_path, output_path, dialogue):
         pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
         text = dialogue
-        add_text_bubble(pil_img, text, x, y - int(h * 0.5), w)
+        add_text_bubble(pil_img, text, x, y, w, h)
 
         pil_img.save(output_path)
         print(f"Processed image saved as {output_path}")
