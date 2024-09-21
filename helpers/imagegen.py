@@ -13,7 +13,6 @@ def create_image(prompt: str, filename: str, summary:str=""):
                   seed=10,
             )
             image.save(f"image_outputs/{filename}.png")
-            #create txt file in image_outputs folder with summary
             with open(f"summary_outputs/{filename}.txt", "w") as text_file:
                   text_file.write(summary)
             print(f"Image saved as {filename}.png")
